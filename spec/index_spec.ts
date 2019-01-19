@@ -167,6 +167,30 @@ describe('ngrxLocalStorage', () => {
         expect(finalState.state instanceof TypeA).toBeFalsy();
     });
 
+    it('filtered - multiple keys at root - should properly revive partial state', function () {
+        const s = new MockStorage();
+        const skr = mockStorageKeySerializer;
+
+        // state at any given moment, subject to sync selectively
+        const nestedState = {
+            app: { app1: true, app2: [1, 2], app3: { any: 'thing' } },
+            feature1: { slice11: true, slice12: [1, 2], slice13: { any: 'thing' } },
+            feature2: { slice21: true, slice22: [1, 2], slice23: { any: 'thing' } },
+        };
+
+        // test selective write to storage
+        syncStateUpdate(nestedState, [
+            { 'feature1': ['slice11', 'slice12'] },
+            { 'feature2': ['slice21', 'slice22'] },
+        ], s, skr, false);
+
+        const raw1 = s.getItem('feature1');
+        expect(raw1).toEqual(jasmine.arrayContaining(['slice11', 'slice12']));
+
+        const raw2 = s.getItem('feature2');
+        expect(raw2).toEqual(jasmine.arrayContaining(['slice21', 'slice22']));
+    });
+
     it('reviver', () => {
         // Use the reviver option to restore including classes
 
@@ -432,5 +456,34 @@ describe('ngrxLocalStorage', () => {
         // Resultant state should merge the oldstring state and our initual state
         const finalState = metaReducer(reducer)(initialState, action);
         expect(finalState.state.astring).toEqual(initialState.state.astring);
+    });
+
+    it('should merge selectively saved state and rehydrated state', () => {
+        const initialState = {
+          app: { app1: false, app2: [], app3: {} },
+          feature1: { slice11: false, slice12: [], slice13: {} },
+          feature2: { slice21: false, slice22: [], slice23: {} },
+        };
+
+        // A legit case where state is saved in chunks rather than as a single object
+        localStorage.setItem('feature1', JSON.stringify({ slice11: true, slice12: [1, 2] }));
+        localStorage.setItem('feature2', JSON.stringify({ slice21: true, slice22: [1, 2] }));
+
+        // Set up reducers
+        const reducer = (state = initialState, action) => state;
+        const metaReducer = localStorageSync({keys: [
+          {'feature1': ['slice11', 'slice12']},
+          {'feature2': ['slice21', 'slice22']},
+        ], rehydrate: true});
+
+        const action = {type: INIT_ACTION};
+
+        // Resultant state should merge the rehydrated partial state and our initial state
+        const finalState = metaReducer(reducer)(initialState, action);
+        expect(finalState).toEqual({
+          app: { app1: false, app2: [], app3: {} },
+          feature1: { slice11: true, slice12: [1, 2], slice13: {} },
+          feature2: { slice21: true, slice22: [1, 2], slice23: {} },
+        });
     });
 });

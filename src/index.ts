@@ -1,3 +1,5 @@
+import * as merge from 'lodash.merge';
+
 const INIT_ACTION = '@ngrx/store/init';
 const UPDATE_ACTION = '@ngrx/store/update-reducers';
 const detectDate = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
@@ -237,39 +239,34 @@ export const localStorageSync = (config: LocalStorageConfig) => (
       )
     : undefined;
 
-  return function(state = rehydratedState, action: any) {
-    /*
-         Handle case where state is rehydrated AND initial state is supplied.
-         Any additional state supplied will override rehydrated state for the given key.
-         */
-    if (
-      (action.type === INIT_ACTION || action.type === UPDATE_ACTION) &&
-      rehydratedState
-    ) {
-      if (state) {
-        Object.keys(state).forEach(function (key) {
-          if (state[key] instanceof Array && rehydratedState[key] instanceof Array) {
-              state[key] = rehydratedState[key];
-          } else if (typeof state[key] === 'object'
-              && typeof rehydratedState[key] === 'object') {
-              state[key] = Object.assign({}, state[key], rehydratedState[key]);
-          } else {
-              state[key] = rehydratedState[key];
-          }
-        });
-      } else {
-        state = Object.assign({}, state, rehydratedState);
-      }
+  return function (state, action: any) {
+    let nextState;
+
+    // If state arrives undefined, we need to let it through the supplied reducer
+    // in order to get a complete state as defined by user
+    if ((action.type === INIT_ACTION) && !state) {
+      nextState = reducer(state, action);
+    } else {
+      nextState = { ...state };
     }
-    const nextState = reducer(state, action);
-    syncStateUpdate(
-      nextState,
-      stateKeys,
-      config.storage,
-      config.storageKeySerializer,
-      config.removeOnUndefined,
-      config.syncCondition
-    );
+
+    if ((action.type === INIT_ACTION || action.type === UPDATE_ACTION) && rehydratedState) {
+      nextState = merge({}, nextState, rehydratedState);
+    }
+
+    nextState = reducer(nextState, action);
+
+    if (action.type !== INIT_ACTION) {
+      syncStateUpdate(
+        nextState,
+        stateKeys,
+        config.storage,
+        config.storageKeySerializer,
+        config.removeOnUndefined,
+        config.syncCondition,
+      );
+    }
+
     return nextState;
   };
 };
