@@ -1,18 +1,25 @@
 {
-	"compilerOptions": {
-		"target": "ES5",
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"module": "commonjs",
-		"moduleResolution": "node",
-		"outDir": "dist",
-		"declaration": true,
-    "lib": ["es2015", "dom"],
+  "compilerOptions": {
+    "target": "ES5",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "declaration": true,
+    "lib": [
+      "es2015",
+      "dom"
+    ],
     "sourceMap": true
-	},
-	"files": [
-		"src/index.ts"
-	],
+  },
+  "files": [
+    "src/adapters.ts",
+    "src/index.ts",
+    "src/sync.module.ts",
+    "src/sync.ts",
+    "src/tokens.ts"
+  ],
   "angularCompilerOptions": {
     "skipTemplateCodegen": true
   }

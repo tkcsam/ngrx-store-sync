@@ -1,7 +1,7 @@
 {
-  "name": "ngrx-store-localstorage",
-  "version": "8.0.0",
-  "description": "State and local storage syncing for @ngrx/store",
+  "name": "ngrx-store-storage",
+  "version": "0.0.1",
+  "description": "State and storage syncing for @ngrx/store",
   "main": "./dist/index.js",
   "scripts": {
     "build_dist": "rimraf dist && tsc",
@@ -16,28 +16,33 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/btroncone/ngrx-store-localstorage.git"
+    "url": "git+https://github.com/cmdickson/ngrx-store-localstorage.git"
   },
   "keywords": [
     "redux",
     "ngrx",
     "store",
     "localstorage",
+    "localforage",
     "rxjs"
   ],
-  "author": "Brian Troncone",
+  "author": "Cameron Matthews-Dickson",
+  "contributors": [
+    "Brian Troncone"
+  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/btroncone/ngrx-store-localstorage/issues"
+    "url": "https://github.com/cmdickson/ngrx-store-localstorage/issues"
   },
-  "homepage": "https://github.com/btroncone/ngrx-store-localstorage#readme",
+  "homepage": "https://github.com/cmdickson/ngrx-store-localstorage#readme",
   "peerDependencies": {
-    "@ngrx/store": "^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+    "@ngrx/effects": "^8.0.0",
+    "@ngrx/store": "^8.0.0"
   },
   "devDependencies": {
-    "@angular/core": "^2.4.7",
-    "@ngrx/core": "^1.2.0",
-    "@ngrx/store": "^7.0.0",
+    "@angular/core": "^8.0.0",
+    "@ngrx/effects": "^8.0.0",
+    "@ngrx/store": "^8.0.0",
     "@types/core-js": "^0.9.35",
     "@types/crypto-js": "^3.1.33",
     "@types/jasmine": "^2.5.47",
@@ -49,10 +54,10 @@
     "jasmine-core": "^2.4.1",
     "localstorage-polyfill": "^1.0.1",
     "rimraf": "^2.5.4",
-    "rxjs": "^5.1.1",
+    "rxjs": "^6.5.2",
     "tslint": "^4.0.2",
-    "typescript": "^2.1.4",
-    "zone.js": "^0.7.7"
+    "typescript": "~3.4.5",
+    "zone.js": "^0.9.1"
   },
   "typings": "./dist/index.d.ts",
   "dependencies": {
