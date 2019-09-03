@@ -6,7 +6,7 @@ import * as deepmerge from 'deepmerge';
 import { Observable } from 'rxjs';
 import { filter, flatMap, pairwise, startWith, tap } from 'rxjs/operators';
 import { StoreStorage, StoreSyncConfig } from './sync.module';
-import { _STORAGE_CONFIG } from './tokens';
+import { _SYNC_CONFIG } from './tokens';
 
 const detectDate = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
 
@@ -20,7 +20,7 @@ const ignoreActions = [State.INIT, StorageSyncActions.HYDRATED];
 @Injectable()
 export class StorageSyncEffects {
     constructor(
-        @Inject(_STORAGE_CONFIG) private _config: StoreSyncConfig,
+        @Inject(_SYNC_CONFIG) private _config: StoreSyncConfig,
         private _store: Store<any>,
         private _actions$: Actions
     ) {}
@@ -35,7 +35,6 @@ export class StorageSyncEffects {
         pairwise(),
         filter(([_, curr]) => !this._config.rehydrate || this._hydrated),
         filter(([prev, curr]) => prev !== curr),
-        tap(() => console.log('Effect is syncing')),
         flatMap(([_, curr]) => syncStateUpdateAsync(
             curr,
             this._config.keys,
@@ -234,7 +233,6 @@ export const syncStateUpdateAsync = (
         return Promise.resolve();
     }, storage.ready().then(() => undefined));
 };
-
 
 export const storageSync = () => (reducer: any) => {
     return function(state: any, action: any): any {

@@ -2,7 +2,7 @@ import { APP_INITIALIZER, InjectionToken, Injector, ModuleWithProviders, NgModul
 import { EffectsModule } from '@ngrx/effects';
 import { ActionReducer, META_REDUCERS, MetaReducer, Store } from '@ngrx/store';
 import { rehydrateApplicationStateAsync, storageSync, StorageSyncActions, StorageSyncEffects } from './sync';
-import { _CONFIG_VALIDATOR, _INITIAL_CONFIG, _STORAGE_CONFIG } from './tokens';
+import { _CONFIG_VALIDATOR, _INITIAL_SYNC_CONFIG, _SYNC_CONFIG } from './tokens';
 
 export interface StoreStorage {
     /**
@@ -44,35 +44,17 @@ export interface StoreSyncConfig {
     syncCondition?: (state: any) => boolean;
 }
 
-export function migrateLocalStorage(
-    keys: any[],
-    storageKeySerializer: (key: string) => string,
-    storage: StoreStorage
-): Promise<void> {
-    return keys.reduce( async (previousPromise, key) => {
-        await previousPromise;
-
-        const storageKey = storageKeySerializer(key);
-        return storage.set(storageKey, JSON.parse(localStorage[storageKey]))
-            .catch(() => { throw new Error('Unable to save state to localStorage'); });
-    }, storage.ready().then(() => ({})));
-}
-
 export function _storeInitializerFactory(store: Store<any>, config: StoreSyncConfig): () => Promise<boolean> {
     if (!config.rehydrate) {
         return () => Promise.resolve(true);
     }
 
-    return () => migrateLocalStorage(
-        config.keys,
-        config.storageKeySerializer,
-        config.storage
-    ).then(() => rehydrateApplicationStateAsync(
+    return () => rehydrateApplicationStateAsync(
         config.keys,
         config.storage,
         config.storageKeySerializer,
         config.restoreDates
-    )).then(state => {
+    ).then(state => {
         store.dispatch({
             type: StorageSyncActions.HYDRATED,
             payload: state
@@ -108,19 +90,19 @@ export function _createConfig(
         EffectsModule.forFeature([StorageSyncEffects])
     ]
 })
-export class StoreStorageRootModule {}
+export class StoreSyncRootModule {}
 
 @NgModule({})
-export class StoreStorageModule {
+export class StoreSyncModule {
     public static forRoot(config: StoreSyncConfig | InjectionToken<StoreSyncConfig>): ModuleWithProviders {
         return {
-            ngModule: StoreStorageRootModule,
+            ngModule: StoreSyncRootModule,
             providers: [
-                { provide: _INITIAL_CONFIG, useValue: config },
-                { provide: _STORAGE_CONFIG, deps: [Injector, _INITIAL_CONFIG], useFactory: _createConfig },
-                { provide: _CONFIG_VALIDATOR, deps: [_STORAGE_CONFIG], useFactory: c => StoreStorageModule._validateStateKeys(c.keys) },
+                { provide: _INITIAL_SYNC_CONFIG, useValue: config },
+                { provide: _SYNC_CONFIG, deps: [Injector, _INITIAL_SYNC_CONFIG], useFactory: _createConfig },
+                { provide: _CONFIG_VALIDATOR, deps: [_SYNC_CONFIG], useFactory: c => StoreSyncModule._validateStateKeys(c.keys) },
                 { provide: META_REDUCERS, useFactory: _storageSyncReducerFactory, multi: true },
-                { provide: APP_INITIALIZER, deps: [Store, _STORAGE_CONFIG], useFactory: _storeInitializerFactory, multi: true }
+                { provide: APP_INITIALIZER, deps: [Store, _SYNC_CONFIG], useFactory: _storeInitializerFactory, multi: true }
             ]
         };
     }

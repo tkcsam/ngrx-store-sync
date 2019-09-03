@@ -1,11 +1,11 @@
 {
   "name": "ngrx-store-storage",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "State and storage syncing for @ngrx/store",
   "main": "./dist/index.js",
   "scripts": {
     "build_dist": "rimraf dist && tsc",
-    "prepublish": "npm run build_dist",
+    "prepare": "npm run build_dist",
     "clean:test": "rimraf tmp",
     "clean:dist": "rimraf dist",
     "lint": "tslint src/**.ts",
@@ -32,9 +32,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cmdickson/ngrx-store-localstorage/issues"
+    "url": "https://github.com/cmdickson/ngrx-store-storage/issues"
   },
-  "homepage": "https://github.com/cmdickson/ngrx-store-localstorage#readme",
+  "homepage": "https://github.com/cmdickson/ngrx-store-storage#readme",
   "peerDependencies": {
     "@ngrx/effects": "^8.0.0",
     "@ngrx/store": "^8.0.0"
