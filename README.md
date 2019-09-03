@@ -1,8 +1,9 @@
 # ngrx-store-localstorage
-Simple syncing between ngrx store and local storage.
+Simple syncing between ngrx store and configurable storage.  Supports async storage API for easy integrations with APIs such as LocalForage and Ionic Storage
 
 ## Dependencies
-`ngrx-store-localstorage` depends on [@ngrx/store](https://github.com/ngrx/store) and [Angular 2+](https://github.com/angular/angular).
+`ngrx-store-storage` depends on [@ngrx/store](https://github.com/ngrx/store) and [Angular 2+](https://github.com/angular/angular).
+
 
 ## Usage
 ```bash
