@@ -1,5 +1,5 @@
 # ngrx-store-sync
-Simple syncing between ngrx store and configurable storage.  Supports async storage API for easy integrations with APIs 
+Simple syncing between [@ngrx/store](https://github.com/ngrx/store) and configurable storage.  Supports async storage API for easy integrations with APIs 
 such as [LocalForage](https://github.com/localForage/localForage) and [Ionic Storage](https://ionicframework.com/docs/building/storage)
 
 Inspired by (and forked from) [ngrx-store-localstorage](https://github.com/btroncone/ngrx-store-localstorage)
