@@ -2,17 +2,18 @@ import { Inject, Injectable } from '@angular/core';
 import { Actions, Effect } from '@ngrx/effects';
 import { State, Store } from '@ngrx/store';
 
-import * as deepmerge from 'deepmerge';
+import * as deepmerge_ from 'deepmerge';
 import { Observable } from 'rxjs';
 import { filter, flatMap, pairwise, startWith, tap } from 'rxjs/operators';
 import { StoreStorage, StoreSyncConfig } from './sync.module';
 import { _SYNC_CONFIG } from './tokens';
 
+const deepmerge = deepmerge_;
 const detectDate = /(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})/;
 
 export const StorageSyncActions = {
-    DUMMY: 'ngrx-store-storage/dummy',
-    HYDRATED: 'ngrx-store-storage/hydrated'
+    DUMMY: 'ngrx-store-sync/dummy',
+    HYDRATED: 'ngrx-store-sync/hydrated'
 };
 
 const ignoreActions = [State.INIT, StorageSyncActions.HYDRATED];
@@ -25,7 +26,7 @@ export class StorageSyncEffects {
         private _actions$: Actions
     ) {}
 
-    private _hydrated: boolean = false;
+    private _hydrated = false;
 
     @Effect({ dispatch: false }) sync$: Observable<any> = this._actions$.pipe(
         startWith( { type: StorageSyncActions.DUMMY }),
@@ -33,7 +34,7 @@ export class StorageSyncEffects {
         filter(action => ignoreActions.indexOf(action.type) === -1),
         flatMap(() => this._store.select(s => s)),
         pairwise(),
-        filter(([_, curr]) => !this._config.rehydrate || this._hydrated),
+        filter(() => !this._config.rehydrate || this._hydrated),
         filter(([prev, curr]) => prev !== curr),
         flatMap(([_, curr]) => syncStateUpdateAsync(
             curr,
@@ -45,6 +46,12 @@ export class StorageSyncEffects {
         ))
     );
 }
+
+/**
+ * Below this point is essentially a copy-paste of
+ * https://github.com/btroncone/ngrx-store-localstorage
+ * modified to interact with an asynchronous storage API
+ */
 
 // correctly parse dates from storage
 export const dateReviver = (key: string, value: any) => {
@@ -115,7 +122,7 @@ export const rehydrateApplicationStateAsync = (
                 // Use provided decrypt function
                 if (decrypt) {
                     slice = decrypt(slice);
-                    const isObjectRegex = new RegExp('{|\\[');
+                    const isObjectRegex = new RegExp('[{\\[]');
                     // let raw = slice;
 
                     if (slice === 'null' || isObjectRegex.test(slice.charAt(0))) {
@@ -169,15 +176,15 @@ export const syncStateUpdateAsync = (
                 if (key[name].serialize) {
                     stateSlice = key[name].serialize(stateSlice);
                 } else {
-                    // if serialize function is not specified filter on fields if an array has been provided.
-                    let filter;
+                    // if serialize function is not specified keyFilter on fields if an array has been provided.
+                    let keyFilter;
                     if (key[name].reduce) {
-                        filter = key[name];
+                        keyFilter = key[name];
                     } else if (key[name].filter) {
-                        filter = key[name].filter;
+                        keyFilter = key[name].filter;
                     }
-                    if (filter) {
-                        stateSlice = filter.reduce((memo, attr) => {
+                    if (keyFilter) {
+                        stateSlice = keyFilter.reduce((memo, attr) => {
                             memo[attr] = stateSlice[attr];
                             return memo;
                         }, {});
@@ -235,7 +242,7 @@ export const syncStateUpdateAsync = (
 };
 
 export const storageSync = () => (reducer: any) => {
-    return function(state: any, action: any): any {
+    return (state: any, action: any) => {
         let nextState;
 
         // If state arrives undefined, we need to let it through the supplied reducer
@@ -248,8 +255,8 @@ export const storageSync = () => (reducer: any) => {
         }
 
         if (action.type === StorageSyncActions.HYDRATED && action.payload) {
-            const overwriteMerge = (destinationArray, sourceArray, options) => sourceArray;
-            const options: deepmerge.Options = {
+            const overwriteMerge = (destinationArray, sourceArray, _) => sourceArray;
+            const options: deepmerge_.Options = {
                 arrayMerge: overwriteMerge
             };
             nextState = deepmerge(nextState, action.payload, options);

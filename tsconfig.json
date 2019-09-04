@@ -1,26 +1,34 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "target": "ES5",
-    "emitDecoratorMetadata": true,
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
-    "outDir": "dist",
-    "declaration": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
     "lib": [
-      "es2015",
+      "es2018",
       "dom"
     ],
-    "sourceMap": true
+    "paths": {
+      "ngrx-store-sync": [
+        "dist/ngrx-store-sync"
+      ],
+      "ngrx-store-sync/*": [
+        "dist/ngrx-store-sync/*"
+      ]
+    }
   },
-  "files": [
-    "src/adapters.ts",
-    "src/index.ts",
-    "src/sync.module.ts",
-    "src/sync.ts",
-    "src/tokens.ts"
-  ],
   "angularCompilerOptions": {
-    "skipTemplateCodegen": true
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true
   }
 }

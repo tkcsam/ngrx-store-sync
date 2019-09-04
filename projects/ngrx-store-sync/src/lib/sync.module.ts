@@ -2,7 +2,7 @@ import { APP_INITIALIZER, InjectionToken, Injector, ModuleWithProviders, NgModul
 import { EffectsModule } from '@ngrx/effects';
 import { ActionReducer, META_REDUCERS, MetaReducer, Store } from '@ngrx/store';
 import { rehydrateApplicationStateAsync, storageSync, StorageSyncActions, StorageSyncEffects } from './sync';
-import { _CONFIG_VALIDATOR, _INITIAL_SYNC_CONFIG, _SYNC_CONFIG } from './tokens';
+import { _INITIAL_SYNC_CONFIG, _SYNC_CONFIG } from './tokens';
 
 export interface StoreStorage {
     /**
@@ -65,9 +65,25 @@ export function _storeInitializerFactory(store: Store<any>, config: StoreSyncCon
 
 export function _storageSyncReducerFactory(): MetaReducer<any> {
     const sync = storageSync();
-    return function(reduce: ActionReducer<any>): ActionReducer<any> {
-        return sync(reduce);
-    };
+    return (reduce: ActionReducer<any>) => sync(reduce);
+}
+
+export function _validateStateKeys(keys: any[]): any[] {
+    return keys.map(key => {
+        let attr = key;
+
+        if (typeof key === 'object') {
+            attr = Object.keys(key)[0];
+        }
+
+        if (typeof attr !== 'string') {
+            throw new TypeError(
+                `StorageSync Unknown Parameter Type: ` +
+                `Expected type of string, got ${typeof attr}`
+            );
+        }
+        return key;
+    });
 }
 
 export function _createConfig(
@@ -82,6 +98,8 @@ export function _createConfig(
     if (result.restoreDates === undefined) {
         result.restoreDates = true;
     }
+
+    _validateStateKeys(result.keys);
     return result;
 }
 
@@ -100,28 +118,9 @@ export class StoreSyncModule {
             providers: [
                 { provide: _INITIAL_SYNC_CONFIG, useValue: config },
                 { provide: _SYNC_CONFIG, deps: [Injector, _INITIAL_SYNC_CONFIG], useFactory: _createConfig },
-                { provide: _CONFIG_VALIDATOR, deps: [_SYNC_CONFIG], useFactory: c => StoreSyncModule._validateStateKeys(c.keys) },
                 { provide: META_REDUCERS, useFactory: _storageSyncReducerFactory, multi: true },
                 { provide: APP_INITIALIZER, deps: [Store, _SYNC_CONFIG], useFactory: _storeInitializerFactory, multi: true }
             ]
         };
-    }
-
-    public static _validateStateKeys(keys: any[]): any[] {
-        return keys.map(key => {
-            let attr = key;
-
-            if (typeof key === 'object') {
-                attr = Object.keys(key)[0];
-            }
-
-            if (typeof attr !== 'string') {
-                throw new TypeError(
-                    `StorageSync Unknown Parameter Type: ` +
-                    `Expected type of string, got ${typeof attr}`
-                );
-            }
-            return key;
-        });
     }
 }
