@@ -4,7 +4,7 @@
   "description": "State and storage syncing for @ngrx/store",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cmdickson/ngrx-store-localstorage.git"
+    "url": "git+https://github.com/cmdickson/ngrx-store-sync.git"
   },
   "keywords": [
     "redux",
@@ -20,9 +20,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/cmdickson/ngrx-store-storage/issues"
+    "url": "https://github.com/cmdickson/ngrx-store-sync/issues"
   },
-  "homepage": "https://github.com/cmdickson/ngrx-store-storage#readme",
+  "homepage": "https://github.com/cmdickson/ngrx-store-sync#readme",
 
   "peerDependencies": {
     "@ngrx/effects": "^8.0.0",

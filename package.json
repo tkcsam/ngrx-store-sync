@@ -1,6 +1,25 @@
 {
   "name": "ngrx-store-sync",
   "version": "0.0.4",
+  "description": "State and storage syncing for @ngrx/store",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmdickson/ngrx-store-sync.git"
+  },
+  "keywords": [
+    "redux",
+    "ngrx",
+    "store",
+    "localstorage",
+    "localforage",
+    "rxjs"
+  ],
+  "author": "Cameron Matthews-Dickson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cmdickson/ngrx-store-sync/issues"
+  },
+  "homepage": "https://github.com/cmdickson/ngrx-store-sync#readme",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,7 +30,6 @@
     "npm_pack": "cd dist/ngrx-store-sync && npm pack",
     "package": "npm run build && npm run npm_pack"
   },
-  "private": true,
   "devDependencies": {
     "@angular/core": "~8.2.4",
     "@angular-devkit/build-angular": "~0.803.2",
