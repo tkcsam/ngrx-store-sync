@@ -1,6 +1,6 @@
 {
   "name": "ngrx-store-sync",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "State and storage syncing for @ngrx/store",
   "repository": {
     "type": "git",
