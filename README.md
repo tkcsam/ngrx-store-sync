@@ -72,7 +72,7 @@ An interface defining the configuration attributes to bootstrap `StoreSyncModule
             * filter: An array of properties which should be synced (same format as the stand-alone array specified above).
 
 * `rehydrate` (optional) `boolean`: Pull initial state from storage on startup, this will default to `false`.
-* `storage` (optional) `Storage`: Specify an object that conforms to the [StoreStorage interface](https://github.com/cmdickson/ngrx-store-storage/blob/master/src/sync.module.ts#L7) to use, this will default to `localStorage`.
+* `storage` (optional) `Storage`: Specify an object that conforms to the [StoreStorage interface](https://github.com/cmdickson/ngrx-store-sync/blob/master/projects/ngrx-store-sync/src/lib/sync.module.ts#L7) to use, this will default to `localStorage`.
 * `removeOnUndefined` (optional) `boolean`: Specify if the state is removed from the storage when the new value is undefined, this will default to `false`.
 * `storageKeySerializer` (optional) `(key: string) => string`: Сustom serialize function for storage keys, used to avoid Storage conflicts. 
 * `restoreDates` \(*boolean? = true*): Restore serialized date objects. If you work directly with ISO date strings, set this option to `false`.
