@@ -1,6 +1,6 @@
 {
   "name": "ngrx-store-sync",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "State and storage syncing for @ngrx/store",
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "build_lib": "ng build ngrx-store-sync",
     "npm_pack": "cd dist/ngrx-store-sync && npm pack",
     "package": "npm run build && npm run npm_pack"
   },
