@@ -16,14 +16,20 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v2
-    - name: Angular Full CI
-      uses: colbyhill21/angular-full-ci@v1.0
+
+    - name: Node $
+      uses: actions/setup-node@v1
       with:
-        # Command to run tests on your project, do not prepend with "npm", it is already included.
-        testcommand: run test
-        # Set to true in order to run mocha tests. This option will install mocha on the image.
-        mocha: false
+        node-version: $
+
+    - name: npm install and npm run build
+      run: |
+        npm ci
+        npm run build:ci
