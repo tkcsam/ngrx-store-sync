@@ -18,18 +18,16 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x]
+        node: [12.x]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v2
 
-    - name: Node $
-      uses: actions/setup-node@v1
+    - name: Node ${{ matrix.node }}
+      uses: actions/setup-node@v1.4.2
       with:
-        node-version: $
+        node-version: ${{ matrix.node }}
 
-    - name: npm install and npm run build
-      run: |
-        npm ci
-        npm run build:ci
+    - run: npm ci
+    - run: npm run build:ci
