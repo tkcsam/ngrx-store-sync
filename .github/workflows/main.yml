@@ -19,6 +19,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - uses: actions/checkout@v2
     - name: Angular Full CI
       uses: colbyhill21/angular-full-ci@v1.0
       with:
