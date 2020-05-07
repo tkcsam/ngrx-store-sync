@@ -32,7 +32,7 @@
     "npm_pack": "cd dist/ngrx-store-sync && npm pack",
     "package": "npm run build_lib && npm run npm_pack",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
-    "build:ci": "npm run clean && npm run test:ci && npm run build:prod"
+    "build:ci": "npm run clean && npm run build:prod"
   },
   "devDependencies": {
     "@angular/core": "~8.2.4",
