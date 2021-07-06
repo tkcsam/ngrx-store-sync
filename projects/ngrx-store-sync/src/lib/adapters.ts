@@ -14,7 +14,7 @@ export class WebStorageStoreStorage implements StoreStorage {
         return Promise.resolve(this._storage.removeItem(key));
     }
 
-    set<T>(key: string, value: any): Promise<any> {
+    set(key: string, value: any): Promise<any> {
         const originalValue = value;
         return new Promise<any>(resolve => {
             this._storage.setItem(key, value);

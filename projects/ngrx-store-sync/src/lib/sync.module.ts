@@ -37,7 +37,7 @@ export interface StoreStorage {
 export interface StoreSyncConfig {
     keys: any[];
     rehydrate?: boolean;
-    storage?: StoreStorage;
+    storage: StoreStorage;
     removeOnUndefined?: boolean;
     restoreDates?: boolean;
     storageKeySerializer?: (key: string) => string;
@@ -52,8 +52,8 @@ export function _storeInitializerFactory(store: Store<any>, config: StoreSyncCon
     return () => rehydrateApplicationStateAsync(
         config.keys,
         config.storage,
-        config.storageKeySerializer,
-        config.restoreDates
+        config.storageKeySerializer as (key: string) => string, // Config always updated to ensure property is defined (i.e. use identity mapping if none specified)
+        config.restoreDates as boolean // Config always updated to ensure property is defined
     ).then(state => {
         store.dispatch({
             type: StorageSyncActions.HYDRATED,
@@ -112,7 +112,7 @@ export class StoreSyncRootModule {}
 
 @NgModule({})
 export class StoreSyncModule {
-    public static forRoot(config: StoreSyncConfig | InjectionToken<StoreSyncConfig>): ModuleWithProviders {
+    public static forRoot(config: StoreSyncConfig | InjectionToken<StoreSyncConfig>): ModuleWithProviders<StoreSyncRootModule> {
         return {
             ngModule: StoreSyncRootModule,
             providers: [

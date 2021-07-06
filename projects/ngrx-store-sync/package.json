@@ -1,6 +1,6 @@
 {
   "name": "ngrx-store-sync",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "State and storage syncing for @ngrx/store",
   "repository": {
     "type": "git",
@@ -23,10 +23,14 @@
     "url": "https://github.com/cmdickson/ngrx-store-sync/issues"
   },
   "homepage": "https://github.com/cmdickson/ngrx-store-sync#readme",
-
+  "dependencies": {
+    "deepmerge": "^4.2.2",
+    "tslib": "^2.1.0"
+  },
   "peerDependencies": {
-    "@ngrx/effects": "^8.0.0",
-    "@ngrx/store": "^8.0.0",
-    "deepmerge": "^3.2.0"
+    "@angular/common": "^12.0.0",
+    "@angular/core": "^12.0.0",
+    "@ngrx/effects": "^12.0.0",
+    "@ngrx/store": "^12.0.0"
   }
 }

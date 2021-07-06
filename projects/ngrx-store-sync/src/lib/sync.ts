@@ -4,7 +4,7 @@ import { State, Store } from '@ngrx/store';
 
 import * as deepmerge_ from 'deepmerge';
 import { Observable } from 'rxjs';
-import { filter, flatMap, pairwise, startWith, tap } from 'rxjs/operators';
+import { filter, mergeMap, pairwise, startWith, tap } from 'rxjs/operators';
 import { StoreStorage, StoreSyncConfig } from './sync.module';
 import { _SYNC_CONFIG } from './tokens';
 
@@ -32,11 +32,11 @@ export class StorageSyncEffects {
         startWith( { type: StorageSyncActions.DUMMY }),
         tap(action => this._hydrated = this._hydrated || (action.type === StorageSyncActions.HYDRATED)), // Side-effecty :(
         filter(action => ignoreActions.indexOf(action.type) === -1),
-        flatMap(() => this._store.select(s => s)),
+        mergeMap(() => this._store.select(s => s)),
         pairwise(),
         filter(() => !this._config.rehydrate || this._hydrated),
         filter(([prev, curr]) => prev !== curr),
-        flatMap(([_, curr]) => syncStateUpdateAsync(
+        mergeMap(([_, curr]) => syncStateUpdateAsync(
             curr,
             this._config.keys,
             this._config.storage,
@@ -66,7 +66,7 @@ const dummyReviver = (key: string, value: any) => value;
 export const rehydrateApplicationStateAsync = (
     keys: any[],
     storage: StoreStorage,
-    storageKeySerializer: (key: string) => string,
+    storageKeySerializer: ((key: string) => string),
     restoreDates: boolean
 ): Promise<any> => {
     return keys.reduce(async (previousPromise, curr) => {
@@ -123,7 +123,6 @@ export const rehydrateApplicationStateAsync = (
                 if (decrypt) {
                     slice = decrypt(slice);
                     const isObjectRegex = new RegExp('[{\\[]');
-                    // let raw = slice;
 
                     if (slice === 'null' || isObjectRegex.test(slice.charAt(0))) {
                         slice = JSON.parse(slice, reviver);
@@ -144,17 +143,17 @@ export const syncStateUpdateAsync = (
     keys: any[],
     storage: StoreStorage,
     storageKeySerializer: (key: string) => string = key => key,
-    removeOnUndefined: boolean = false,
+    removeOnUndefined = false,
     syncCondition?: (state: any) => boolean
 ): Promise<void> =>  {
     try {
         if (syncCondition && syncCondition(state) !== true) {
-            return;
+            return Promise.resolve();
         }
     } catch ( e ) {
         // Treat TypeError as do not sync
         if (e instanceof TypeError) {
-            return;
+            return Promise.resolve();
         }
         throw e;
     }
@@ -250,7 +249,6 @@ export const storageSync = () => (reducer: any) => {
         if ((action.type === State.INIT) && !state) {
             nextState = reducer(state, action);
         } else {
-            // nextState = { ...state };
             nextState = state;
         }
 

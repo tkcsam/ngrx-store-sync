@@ -1,0 +1,62 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json",
+          "e2e/tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "prefix": "lib",
+            "style": "kebab-case",
+            "type": "element"
+          }
+        ],
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "prefix": "lib",
+            "style": "camelCase",
+            "type": "attribute"
+          }
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "off", // Just too many to deal with at once
+        "@typescript-eslint/no-explicit-any": "off", // Just too many to deal with at once
+        "@typescript-eslint/no-unsafe-call": "off", // Just too many to deal with at once
+        "@typescript-eslint/no-unsafe-assignment": "off", // Just too many to deal with at once
+        "@typescript-eslint/no-unsafe-member-access": "off", // Just too many to deal with at once
+        "@typescript-eslint/no-unsafe-return": "off", // Just too many to deal with at once
+        "@typescript-eslint/no-unused-vars": "off", // TypeScript compiler with noUnusedLocals is smarter about this
+        "@typescript-eslint/restrict-template-expressions": "off"
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}
