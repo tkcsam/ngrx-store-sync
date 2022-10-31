@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@angular/core';
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, createEffect } from '@ngrx/effects';
 import { State, Store } from '@ngrx/store';
 
 import * as deepmerge_ from 'deepmerge';
@@ -28,7 +28,7 @@ export class StorageSyncEffects {
 
     private _hydrated = false;
 
-    @Effect( { dispatch: false }) sync$: Observable<any> = this._actions$.pipe(
+     sync$: Observable<any> = createEffect(() => this._actions$.pipe(
         startWith( { type: StorageSyncActions.DUMMY }),
         tap(action => this._hydrated = this._hydrated || (action.type === StorageSyncActions.HYDRATED)), // Side-effecty :(
         filter(action => ignoreActions.indexOf(action.type) === -1),
@@ -44,7 +44,7 @@ export class StorageSyncEffects {
             this._config.removeOnUndefined,
             this._config.syncCondition
         ))
-    );
+    ), { dispatch: false });
 }
 
 /**
