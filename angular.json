@@ -47,6 +47,7 @@
   },
   "defaultProject": "ngrx-store-sync",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "defaultCollection": "@angular-eslint/schematics",
+    "analytics": false
   }
 }
